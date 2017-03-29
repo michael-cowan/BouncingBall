@@ -19,7 +19,7 @@ namespace Form1
             g = 2;
 
             // Energy lost to collision (%)
-            collisionEnergyLost = 20;
+            collisionEnergyLost = 15;
 
             Velocity = 0;
             AccelApplied = 0;
