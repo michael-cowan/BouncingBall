@@ -41,7 +41,7 @@
             this.player.Location = new System.Drawing.Point(309, 46);
             this.player.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.player.Name = "player";
-            this.player.Size = new System.Drawing.Size(60, 62);
+            this.player.Size = new System.Drawing.Size(60, 60);
             this.player.TabIndex = 0;
             this.player.TabStop = false;
             // 
@@ -65,7 +65,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(726, 557);
+            this.ClientSize = new System.Drawing.Size(728, 544);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.player);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);

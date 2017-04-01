@@ -4,42 +4,96 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Windows.Forms;
+using System.Drawing;
+using Form1;
+
 namespace Form1
 {
     class Mechanics
     {
-        private double g { get; set; }
+        private int g { get; set; }
         private double collisionEnergyLost { get; set; }
 
-        public double Velocity { get; set; }
-        public double AccelApplied { get; set; }
+        public double[] Velocity { get; set; }
+        public int[] AccelApplied { get; set; }
 
         public Mechanics()
         {
+            // Gravity acceleration: px / dt
             g = 2;
 
-            // Energy lost to collision (%)
+            // Energy lost in collision (%)
             collisionEnergyLost = 15;
 
-            Velocity = 0;
-            AccelApplied = 0;
+            // Array[] { X, Y }
+            Velocity = new double[] { 0, 0 };
+            AccelApplied = new int[] { 0, 0 };
         }
 
         public void calcNewVelocity()
         {
-            // newVel = (a + g)dt + vel
-            //  dt ~= 1
-            Velocity = Math.Round(AccelApplied + g + Velocity);
+
         }
 
-        public int movePlayer()
+        public void elasticCollision(int i)
         {
-            return (int)Math.Round(Velocity);
+            // Calculate new velocity from collision
+            double newVel = -(Velocity[i] * ((100 - collisionEnergyLost) / 100));
+
+            // If velocity is less than 3 px / dt, round down to 0
+            if (Math.Abs(newVel) < 5) { newVel = 0; }
+            Velocity[i] = newVel;
         }
 
-        public void elasticCollision()
+        public int[] movePlayer(PictureBox player)
         {
-            Velocity *= -((100 - collisionEnergyLost) / 100);
+            Rectangle window = Form1.ActiveForm.ClientRectangle;
+            int[] ans = new int[] { player.Left, player.Top };
+
+            //newVel = (a + g)dt + vel
+            //   dt ~= 1
+            // Account for acceleration or collision if at wall
+
+            // X axis
+            if (!(player.Right == window.Right || player.Left == window.Left) || (Velocity[0] == 0))
+            {
+                Velocity[0] = Math.Round(Velocity[0] + AccelApplied[0]);
+                
+                // Rounds X axis velocity to 0 if it is under 3 px / dt
+                if (Math.Abs(Velocity[0]) < 3) { Velocity[0] = 0; }
+            }
+            else { elasticCollision(0); }
+
+            // Y axis
+            if (!(player.Top == window.Top || player.Bottom == window.Bottom) || (Velocity[1] == 0))
+            {
+                // Doesn't calculate new velocity if no force is applied and ball is on bottom of window
+                if (!(player.Bottom == window.Bottom & Velocity[1] == 0 & AccelApplied[1] == 0))
+                {
+                    Velocity[1] = Math.Round(AccelApplied[1] + g + Velocity[1]);
+                }
+            }
+            else { elasticCollision(1); }
+
+            
+
+            // Find the new position of the player
+            int[,] minMax = new int[,] { { window.Left, window.Right - player.Width }, { window.Top, window.Bottom - player.Height } };
+            for (int i = 0; i < 2; i++)
+            {
+                // Makes sure player stays within window
+                if (Velocity[i] < 0)
+                {
+                    ans[i] = (int)Math.Round(Math.Max(minMax[i, 0], ans[i] + Velocity[i]));
+                }
+                else
+                {
+                    ans[i] = (int)Math.Round(Math.Min(minMax[i, 1], ans[i] + Velocity[i]));
+                }
+            }
+
+            return ans;
         }
     }
 }
