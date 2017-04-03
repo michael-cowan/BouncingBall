@@ -14,12 +14,14 @@ namespace Form1
     {
         private Mechanics Physics { get; set; }
         private List<PictureBox> ob { get; set; }
+        private double time { get; set; }
 
         public Form1()
         {
             InitializeComponent();
             Physics = new Mechanics();
             ob = new List<PictureBox>();
+            time = 0;
 
             // Make the player a circle
             int subtract = 0;
@@ -36,13 +38,13 @@ namespace Form1
             {
                 if (timer1.Enabled)
                 {
-                    timer1.Enabled = false;
+                    timer1.Stop();
                 }
                 else
                 {
                     ob.Add(Physics.addObstacle());
 
-                    timer1.Enabled = true;
+                    timer1.Start();
                 }
             }
             if (e.KeyData == Keys.Space)
@@ -62,6 +64,8 @@ namespace Form1
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            time += timer1.Interval / 1000.0;
+
             int[] newPositions = Physics.movePlayer(player);
             player.Left = newPositions[0];
             player.Top = newPositions[1];
@@ -70,7 +74,7 @@ namespace Form1
             Physics.AccelApplied[0] = 0;
             Physics.AccelApplied[1] = 0;
 
-            label1.Text = "VelX: " + Physics.Velocity[0] + "\n" + "VelY: " + Physics.Velocity[1];
+            label1.Text = "VelX: " + Physics.Velocity[0] + "\nVelY: " + Physics.Velocity[1] + "\nTime: " + Math.Round(time, 1);
 
             // Moves the obstacles across bottom of screen
             for (int i = ob.Count - 1; i > -1; i--)
@@ -82,6 +86,8 @@ namespace Form1
                 }
                 else { ob[i].Left -= 5; }
             }
+
+            
         }
     }
 }
