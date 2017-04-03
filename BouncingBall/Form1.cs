@@ -15,6 +15,7 @@ namespace Form1
         private Mechanics Physics { get; set; }
         private List<PictureBox> ob { get; set; }
         private double time { get; set; }
+        private int newObstacle { get; set; }
 
         public Form1()
         {
@@ -22,6 +23,7 @@ namespace Form1
             Physics = new Mechanics();
             ob = new List<PictureBox>();
             time = 0;
+            newObstacle = 0;
 
             // Make the player a circle
             int subtract = 0;
@@ -42,8 +44,6 @@ namespace Form1
                 }
                 else
                 {
-                    ob.Add(Physics.addObstacle());
-
                     timer1.Start();
                 }
             }
@@ -66,6 +66,13 @@ namespace Form1
         {
             time += timer1.Interval / 1000.0;
 
+
+            if (newObstacle == 80)
+            {
+                ob.Add(Physics.addObstacle());
+                newObstacle = 0;
+            }
+
             int[] newPositions = Physics.movePlayer(player);
             player.Left = newPositions[0];
             player.Top = newPositions[1];
@@ -87,6 +94,7 @@ namespace Form1
                 else { ob[i].Left -= 5; }
             }
 
+            newObstacle++;
             
         }
     }

@@ -104,7 +104,7 @@ namespace Form1
             PictureBox p = new PictureBox();
             p.Name = "Obstacle";
             p.BackColor = Color.Blue;
-            p.Size = new Size(r.Next(10, 100), r.Next(10, 50));
+            p.Size = new Size(r.Next(10, (int)window.Width/8), r.Next(10, (int)window.Height/3));
             p.Left = window.Right;
             p.Top = window.Bottom - p.Height;
             Form1.ActiveForm.Controls.Add(p);
