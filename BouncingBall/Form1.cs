@@ -13,11 +13,13 @@ namespace Form1
     public partial class Form1 : Form
     {
         private Mechanics Physics { get; set; }
+        private List<PictureBox> ob { get; set; }
 
         public Form1()
         {
             InitializeComponent();
             Physics = new Mechanics();
+            ob = new List<PictureBox>();
 
             // Make the player a circle
             int subtract = 0;
@@ -38,6 +40,8 @@ namespace Form1
                 }
                 else
                 {
+                    ob.Add(Physics.addObstacle());
+
                     timer1.Enabled = true;
                 }
             }
@@ -67,6 +71,18 @@ namespace Form1
             Physics.AccelApplied[1] = 0;
 
             label1.Text = "VelX: " + Physics.Velocity[0] + "\n" + "VelY: " + Physics.Velocity[1];
+
+            // Moves the obstacles across bottom of screen
+            for (int i = ob.Count - 1; i > -1; i--)
+            {
+                if (ob[i].Right <= ClientRectangle.Left)
+                {
+                    this.Controls.Remove(ob[i]);
+                    ob.RemoveAt(i);
+                }
+                else { ob[i].Left -= 5; }
+            }
         }
     }
 }
+
