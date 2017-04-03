@@ -24,7 +24,7 @@ namespace Form1
             g = 2;
 
             // Energy lost in collision (%)
-            collisionEnergyLost = 15;
+            collisionEnergyLost = 20;
 
             // Array[] { X, Y }
             Velocity = new double[] { 0, 0 };
