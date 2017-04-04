@@ -47,7 +47,11 @@ namespace Form1
                     timer1.Start();
                 }
             }
-            if (e.KeyData == Keys.Space)
+            if (e.KeyData == Keys.Down)
+            {
+                Physics.AccelApplied[1] = 5;
+            }
+            else if (e.KeyData == Keys.Up)
             {
                 Physics.AccelApplied[1] = -10;
             }
@@ -56,7 +60,7 @@ namespace Form1
                 Physics.AccelApplied[0] = 5;
             }
 
-            if (e.KeyData == Keys.Left)
+            else if (e.KeyData == Keys.Left)
             {
                 Physics.AccelApplied[0] = -5;
             }

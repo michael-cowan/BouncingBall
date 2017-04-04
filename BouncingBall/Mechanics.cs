@@ -69,7 +69,7 @@ namespace Form1
             if (!(player.Top == window.Top || player.Bottom == window.Bottom) || (Velocity[1] == 0))
             {
                 // Doesn't calculate new velocity if no force is applied and ball is on bottom of window
-                if (!(player.Bottom == window.Bottom & Velocity[1] == 0 & AccelApplied[1] == 0))
+                if (!(player.Bottom == window.Bottom & Velocity[1] == 0 & AccelApplied[1] >= 0))
                 {
                     Velocity[1] = Math.Round(AccelApplied[1] + g + Velocity[1]);
                 }
