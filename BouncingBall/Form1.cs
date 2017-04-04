@@ -13,9 +13,11 @@ namespace Form1
     public partial class Form1 : Form
     {
         private Mechanics Physics { get; set; }
+        private Random r { get; set; }
         private List<PictureBox> ob { get; set; }
         private double time { get; set; }
-        private int newObstacle { get; set; }
+        private int obstacleCounter { get; set; }
+        private int nextObstacle { get; set; }
         private bool gameOver { get; set; }
         private double highScore { get; set; }
 
@@ -23,9 +25,11 @@ namespace Form1
         {
             InitializeComponent();
             Physics = new Mechanics();
+            r = new Random();
             ob = new List<PictureBox>();
             time = 0;
-            newObstacle = 0;
+            obstacleCounter = 0;
+            RestartNextObstacle();
             gameOver = false;
             highScore = 0;
             label1.Text = "Press Enter to Start";
@@ -39,12 +43,17 @@ namespace Form1
             player.Region = rg;
         }
 
+        private void RestartNextObstacle()
+        {
+            nextObstacle = r.Next(20, 80);
+        }
+
         private void RestartGame()
         {
-            Physics.AccelApplied[0] = 0;
-            Physics.AccelApplied[1] = 0;
-            Physics.Velocity[0] = 0;
-            Physics.Velocity[1] = 0;
+            Physics.NewGameSettings();
+
+            this.obstacleCounter = 0;
+            this.RestartNextObstacle();
 
             player.Left = 206;
             player.Top = 30;
@@ -116,10 +125,11 @@ namespace Form1
             time = Math.Round(time + (timer1.Interval / 1000.0), 2);
 
 
-            if (newObstacle == 80)
+            if (obstacleCounter == nextObstacle)
             {
                 ob.Add(Physics.addObstacle());
-                newObstacle = 0;
+                obstacleCounter = 0;
+                RestartNextObstacle();
             }
 
             int[] newPositions = Physics.movePlayer(player);
@@ -140,10 +150,13 @@ namespace Form1
                     this.Controls.Remove(ob[i]);
                     ob.RemoveAt(i);
                 }
-                else { ob[i].Left -= 5; }
+                else
+                {
+                    ob[i].Left -= (5 + ((int)time/5));
+                }
             }
 
-            newObstacle++;
+            obstacleCounter++;
         }
     }
 }

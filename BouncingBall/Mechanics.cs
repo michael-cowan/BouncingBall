@@ -31,6 +31,14 @@ namespace Form1
             AccelApplied = new int[] { 0, 0 };
         }
 
+        public void NewGameSettings()
+        {
+            Velocity[0] = 0;
+            Velocity[1] = 0;
+            AccelApplied[0] = 0;
+            AccelApplied[1] = 0;
+        }
+
         public void calcNewVelocity()
         {
 
