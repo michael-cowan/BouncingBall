@@ -114,6 +114,8 @@ namespace Form1
             p.BackColor = Color.Blue;
             p.Size = new Size(r.Next(10, (int)window.Width/8), r.Next(10, (int)window.Height/3));
             p.Left = window.Right;
+
+            // Determines whether obstacle appears on top or bottom of screen
             if (r.NextDouble() < 0.5)
             {
                 p.Top = window.Bottom - p.Height;

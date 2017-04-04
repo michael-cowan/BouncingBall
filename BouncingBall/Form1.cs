@@ -153,7 +153,7 @@ namespace Form1
             Physics.AccelApplied[1] = 0;
 
             // Displays velocities and time
-            label1.Text = "VelX: " + Physics.Velocity[0] + "\nVelY: " + Physics.Velocity[1] + "\nTime: " + Math.Round(time, 1);
+            label1.Text = "Time: " + Math.Round(time, 1);
 
             // Moves the obstacles across bottom of screen
             for (int i = ob.Count - 1; i > -1; i--)
