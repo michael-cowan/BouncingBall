@@ -17,6 +17,7 @@ namespace Form1
         private double time { get; set; }
         private int newObstacle { get; set; }
         private bool gameOver { get; set; }
+        private double highScore { get; set; }
 
         public Form1()
         {
@@ -26,6 +27,9 @@ namespace Form1
             time = 0;
             newObstacle = 0;
             gameOver = false;
+            highScore = 0;
+            label1.Text = "Press Enter to Start";
+            label2.Text = "High Score\n" + highScore;
 
             // Make the player a circle
             int subtract = 0;
@@ -35,9 +39,29 @@ namespace Form1
             player.Region = rg;
         }
 
+        private void RestartGame()
+        {
+            Physics.AccelApplied[0] = 0;
+            Physics.AccelApplied[1] = 0;
+
+            player.Left = 206;
+            player.Top = 30;
+            foreach (var item in ob)
+            {
+                this.Controls.Remove(item);
+            }
+            ob.Clear();
+            time = 0;
+            gameOver = false;
+            timer1.Stop();
+            label1.Text = "Press Enter to Start";
+            label2.Text = "High Score\n" + highScore;
+        }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyData == Keys.R) { RestartGame(); }
+
             if (e.KeyData == Keys.Enter & !gameOver)
             {
                 if (timer1.Enabled)
@@ -49,6 +73,7 @@ namespace Form1
                     timer1.Start();
                 }
             }
+
             if (e.KeyData == Keys.Down)
             {
                 Physics.AccelApplied[1] = 5;
@@ -57,6 +82,7 @@ namespace Form1
             {
                 Physics.AccelApplied[1] = -10;
             }
+
             if (e.KeyData == Keys.Right)
             {
                 Physics.AccelApplied[0] = 5;
@@ -70,6 +96,21 @@ namespace Form1
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            // Checks to see if player is in contact with an obstacle
+            if (Physics.inContact(player, ob))
+            {
+                timer1.Stop();
+                this.gameOver = true;
+                label1.Text = "GAME OVER\nFINAL SCORE: " + time;
+                if (time > highScore)
+                {
+                    highScore = time;
+                    label1.Text += "\nNEW HIGH SCORE!";
+                }
+
+                return;
+            }
+
             time += timer1.Interval / 1000.0;
 
 
@@ -101,14 +142,6 @@ namespace Form1
             }
 
             newObstacle++;
-
-            if (Physics.inContact(player, ob))
-            {
-                timer1.Stop();
-                this.gameOver = true;
-                label1.Text = "GAME OVER\nFINAL SCORE: " + time;
-            }
-            
         }
     }
 }
