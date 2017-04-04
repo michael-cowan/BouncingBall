@@ -43,6 +43,8 @@ namespace Form1
         {
             Physics.AccelApplied[0] = 0;
             Physics.AccelApplied[1] = 0;
+            Physics.Velocity[0] = 0;
+            Physics.Velocity[1] = 0;
 
             player.Left = 206;
             player.Top = 30;
@@ -111,7 +113,7 @@ namespace Form1
                 return;
             }
 
-            time += timer1.Interval / 1000.0;
+            time = Math.Round(time + (timer1.Interval / 1000.0), 2);
 
 
             if (newObstacle == 80)
