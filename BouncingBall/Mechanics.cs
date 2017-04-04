@@ -114,13 +114,21 @@ namespace Form1
             p.BackColor = Color.Blue;
             p.Size = new Size(r.Next(10, (int)window.Width/8), r.Next(10, (int)window.Height/3));
             p.Left = window.Right;
-            p.Top = window.Bottom - p.Height;
+            if (r.NextDouble() < 0.5)
+            {
+                p.Top = window.Bottom - p.Height;
+            }
+            else
+            {
+                p.Top = window.Top;
+            }
             Form1.ActiveForm.Controls.Add(p);
             return p;
         }
 
-        public bool inContact(PictureBox player, List<PictureBox> ob)
+        public bool inContact(PictureBox player, List<PictureBox> ob, PictureBox TopBar)
         {
+            if (player.Bounds.IntersectsWith(TopBar.Bounds)) { return true; }
             foreach (var item in ob)
             {
                 if (player.Bounds.IntersectsWith(item.Bounds))
