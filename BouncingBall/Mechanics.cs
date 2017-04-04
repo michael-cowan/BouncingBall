@@ -110,5 +110,17 @@ namespace Form1
             Form1.ActiveForm.Controls.Add(p);
             return p;
         }
+
+        public bool inContact(PictureBox player, List<PictureBox> ob)
+        {
+            foreach (var item in ob)
+            {
+                if (player.Bounds.IntersectsWith(item.Bounds))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace Form1
         private List<PictureBox> ob { get; set; }
         private double time { get; set; }
         private int newObstacle { get; set; }
+        private bool gameOver { get; set; }
 
         public Form1()
         {
@@ -24,6 +25,7 @@ namespace Form1
             ob = new List<PictureBox>();
             time = 0;
             newObstacle = 0;
+            gameOver = false;
 
             // Make the player a circle
             int subtract = 0;
@@ -36,7 +38,7 @@ namespace Form1
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.Enter)
+            if (e.KeyData == Keys.Enter & !gameOver)
             {
                 if (timer1.Enabled)
                 {
@@ -99,8 +101,14 @@ namespace Form1
             }
 
             newObstacle++;
+
+            if (Physics.inContact(player, ob))
+            {
+                timer1.Stop();
+                this.gameOver = true;
+                label1.Text = "GAME OVER\nFINAL SCORE: " + time;
+            }
             
         }
     }
 }
-
