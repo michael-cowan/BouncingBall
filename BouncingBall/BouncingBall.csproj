@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Black ball.ico" />
-    <Content Include="Black ball.png" />
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
