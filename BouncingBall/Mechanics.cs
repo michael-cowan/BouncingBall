@@ -17,7 +17,7 @@ namespace Form1
 
         public double[] Velocity { get; set; }
         public int[] AccelApplied { get; set; }
-        public bool hasBounced { get; set; }
+        public bool HasBounced { get; set; }
 
         public Mechanics()
         {
@@ -31,7 +31,7 @@ namespace Form1
             Velocity = new double[] { 0, 0 };
             AccelApplied = new int[] { 0, 0 };
 
-            hasBounced = false;
+            HasBounced = false;
         }
 
         public void NewGameSettings()
@@ -44,7 +44,7 @@ namespace Form1
 
         public void ElasticCollision(int i)
         {
-            hasBounced = true;
+            HasBounced = true;
 
             // Calculate new velocity from collision
             double newVel = -(Velocity[i] * ((100 - collisionEnergyLost) / 100));
@@ -112,11 +112,11 @@ namespace Form1
             PictureBox p = new PictureBox();
             p.Name = "Obstacle";
             p.BackColor = Color.Blue;
-            p.Size = new Size(r.Next(10, (int)window.Width/8), r.Next(10, (int)window.Height/3));
+            p.Size = new Size(r.Next(10, (int)window.Width/8), r.Next(30, (int)window.Height/3));
             p.Left = window.Right;
 
             // Determines whether obstacle appears on top or bottom of screen
-            if (r.NextDouble() < 0.75)
+            if (r.NextDouble() < 0.5)
             {
                 p.Top = window.Bottom - p.Height;
             }

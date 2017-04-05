@@ -62,7 +62,7 @@ namespace Form1
 
         private void RestartNextObstacle()
         {
-            nextObstacle = r.Next(20, 80);
+            nextObstacle = r.Next(20, 60);
         }
 
         private void RestartGame()
@@ -108,10 +108,10 @@ namespace Form1
             }
 
             // Allows one boost upwards in between wall/ground bounces
-            if (e.KeyData == Keys.Up & Physics.hasBounced)
+            if (e.KeyData == Keys.Up & Physics.HasBounced)
             {
                 Physics.AccelApplied[1] = -10;
-                Physics.hasBounced = false;
+                Physics.HasBounced = false;
             }
 
             // Unlimited movements to the right & left
