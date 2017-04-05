@@ -98,7 +98,7 @@ namespace Form1
                 if (timer1.Enabled)
                 {
                     timer1.Stop();
-                    label3.Text = "       PAUSED       ";
+                    label3.Text = "        PAUSED       \n\n('R' to Restart)";
                 }
                 else
                 {
@@ -193,7 +193,7 @@ namespace Form1
             if (label3.Text == "")
             {
                 timer1.Stop();
-                label3.Text = "       PAUSED       ";
+                label3.Text = "        PAUSED       \n\n('R' to Restart)";
             }
 
             // Readjust the labels
