@@ -54,6 +54,10 @@ namespace Form1
             label2.Left = ClientRectangle.Right - label2.Width - 10;
             TopBar.Width = ClientRectangle.Width;
             label3.Left = (ClientRectangle.Width - label3.Width) / 2;
+            if (!timer1.Enabled & !label3.Text.Contains("PAUSE"))
+            {
+                player.Left = (ClientRectangle.Width - player.Width) / 2;
+            }
         }
 
         private void RestartNextObstacle()
@@ -132,9 +136,11 @@ namespace Form1
                 label3.Text = "GAME OVER\nFINAL SCORE: " + time;
                 if (time > highScore)
                 {
-                    highScore = time;
-                    label3.Text += "\n\nNEW HIGH SCORE!";
+                    highScore = Math.Round(time, 2);
+                    label3.Text += "\nNEW HIGH SCORE!";
                 }
+
+                label3.Text += "\n\nPress 'R' to Restart";
 
                 return;
             }
@@ -183,6 +189,14 @@ namespace Form1
 
         private void Form1_Resize(object sender, EventArgs e)
         {
+            // If window is being resized, pause the game
+            if (label3.Text == "")
+            {
+                timer1.Stop();
+                label3.Text = "       PAUSED       ";
+            }
+
+            // Readjust the labels
             AdjustLabels();
         }
     }
