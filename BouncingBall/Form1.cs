@@ -81,8 +81,10 @@ namespace Form1
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
+            // R restarts the game
             if (e.KeyData == Keys.R) { RestartGame(); }
 
+            // Enter pauses/starts the game
             if (e.KeyData == Keys.Enter & !gameOver)
             {
                 if (timer1.Enabled)
@@ -95,15 +97,14 @@ namespace Form1
                 }
             }
 
-            if (e.KeyData == Keys.Down)
-            {
-                Physics.AccelApplied[1] = 5;
-            }
-            else if (e.KeyData == Keys.Up)
+            // Allows one boost upwards in between wall/ground bounces
+            if (e.KeyData == Keys.Up & Physics.hasBounced)
             {
                 Physics.AccelApplied[1] = -10;
+                Physics.hasBounced = false;
             }
 
+            // Unlimited movements to the right & left
             if (e.KeyData == Keys.Right)
             {
                 Physics.AccelApplied[0] = 5;
@@ -153,7 +154,7 @@ namespace Form1
             Physics.AccelApplied[1] = 0;
 
             // Displays velocities and time
-            label1.Text = "Time: " + Math.Round(time, 1);
+            label1.Text = "Score: " + Math.Round(time, 1);
 
             // Moves the obstacles across bottom of screen
             for (int i = ob.Count - 1; i > -1; i--)
@@ -165,11 +166,13 @@ namespace Form1
                 }
                 else
                 {
-                    ob[i].Left -= (5 + ((int)time/5));
+                    ob[i].Left -= (5 + ((int)time/4));
                 }
             }
 
             obstacleCounter++;
+            label1.SendToBack();
+            label2.SendToBack();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
