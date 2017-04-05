@@ -34,8 +34,6 @@ namespace Form1
             gameOver = false;
             highScore = 0;
             multipleMoves = 0;
-            label1.Text = "Press Enter to Start";
-            label2.Text = "High Score\n" + highScore;
 
             // Make the player a circle
             int subtract = 0;
@@ -45,6 +43,9 @@ namespace Form1
             player.Region = rg;
 
             TopBar.Width = ClientRectangle.Width;
+
+            // Initializes start of game
+            RestartGame();
         }
 
         private void AdjustLabels()
@@ -65,7 +66,7 @@ namespace Form1
             this.obstacleCounter = 0;
             this.RestartNextObstacle();
 
-            player.Left = (ClientRectangle.Width + player.Width) / 2;
+            player.Left = (ClientRectangle.Width - player.Width) / 2;
             player.Top = 30;
             foreach (var item in ob)
             {
