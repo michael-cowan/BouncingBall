@@ -34,6 +34,7 @@ namespace Form1
             gameOver = false;
             highScore = 0;
             multipleMoves = 0;
+            AdjustLabels();
 
             // Make the player a circle
             int subtract = 0;
@@ -52,6 +53,7 @@ namespace Form1
         {
             label2.Left = ClientRectangle.Right - label2.Width - 10;
             TopBar.Width = ClientRectangle.Width;
+            label3.Left = (ClientRectangle.Width - label3.Width) / 2;
         }
 
         private void RestartNextObstacle()
@@ -76,8 +78,9 @@ namespace Form1
             time = 0;
             gameOver = false;
             timer1.Stop();
-            label1.Text = "Press Enter to Start";
+            label1.Text = "Score: " + time;
             label2.Text = "High Score\n" + highScore;
+            label3.Text = "Press Enter to Start";
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -91,10 +94,12 @@ namespace Form1
                 if (timer1.Enabled)
                 {
                     timer1.Stop();
+                    label3.Text = "       PAUSED       ";
                 }
                 else
                 {
                     timer1.Start();
+                    label3.Text = "";
                 }
             }
 
@@ -124,11 +129,11 @@ namespace Form1
             {
                 timer1.Stop();
                 this.gameOver = true;
-                label1.Text = "GAME OVER\nFINAL SCORE: " + time;
+                label3.Text = "GAME OVER\nFINAL SCORE: " + time;
                 if (time > highScore)
                 {
                     highScore = time;
-                    label1.Text += "\nNEW HIGH SCORE!";
+                    label3.Text += "\n\nNEW HIGH SCORE!";
                 }
 
                 return;
