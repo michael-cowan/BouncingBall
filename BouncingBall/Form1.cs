@@ -108,7 +108,7 @@ namespace Form1
             }
 
             // Allows one boost upwards in between wall/ground bounces
-            if (e.KeyData == Keys.Up & Physics.HasBounced)
+            if (e.KeyData == Keys.Up & Physics.HasBounced & Physics.BoostMode)
             {
                 Physics.AccelApplied[1] = -10;
                 Physics.HasBounced = false;

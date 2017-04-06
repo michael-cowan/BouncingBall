@@ -18,14 +18,18 @@ namespace Form1
         public double[] Velocity { get; set; }
         public int[] AccelApplied { get; set; }
         public bool HasBounced { get; set; }
+        public bool BoostMode { get; set; }
 
         public Mechanics()
         {
             // Gravity acceleration: px / dt
             g = 2;
 
+            // BoostMode means you can use a boost (up arrow)
+            BoostMode = true;
+
             // Energy lost in collision (%)
-            collisionEnergyLost = 20;
+            collisionEnergyLost = (BoostMode) ? 20 : 0;
 
             // Array[] { X, Y }
             Velocity = new double[] { 0, 0 };
