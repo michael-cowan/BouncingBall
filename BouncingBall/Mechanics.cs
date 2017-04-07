@@ -26,13 +26,13 @@ namespace Form1
             g = 2;
 
             // BoostMode means you can use a boost (up arrow)
-            BoostMode = true;
+            BoostMode = false;
 
             // Energy lost in collision (%)
             collisionEnergyLost = (BoostMode) ? 20 : 0;
 
             // Array[] { X, Y }
-            Velocity = new double[] { 0, 0 };
+            Velocity = new double[] { 0, -2 };
             AccelApplied = new int[] { 0, 0 };
 
             HasBounced = false;
@@ -41,7 +41,7 @@ namespace Form1
         public void NewGameSettings()
         {
             Velocity[0] = 0;
-            Velocity[1] = 0;
+            Velocity[1] = -2;
             AccelApplied[0] = 0;
             AccelApplied[1] = 0;
         }
