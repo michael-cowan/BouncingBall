@@ -93,9 +93,9 @@
             this.label3.Location = new System.Drawing.Point(234, 158);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(200, 25);
+            this.label3.Size = new System.Drawing.Size(211, 25);
             this.label3.TabIndex = 4;
-            this.label3.Text = "Press Enter to Start";
+            this.label3.Text = "Press Space to Start";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1

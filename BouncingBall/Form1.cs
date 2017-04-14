@@ -19,6 +19,7 @@ namespace Form1
         private int obstacleCounter { get; set; }
         private int nextObstacle { get; set; }
         private bool gameOver { get; set; }
+        private bool paused { get; set; }
         private double highScore { get; set; }
         private int multipleMoves { get; set; }
 
@@ -49,20 +50,25 @@ namespace Form1
             RestartGame();
         }
 
-        private void AdjustLabels()
-        {
-            label2.Left = ClientRectangle.Right - label2.Width - 10;
-            TopBar.Width = ClientRectangle.Width;
-            label3.Left = (ClientRectangle.Width - label3.Width) / 2;
-            if (!timer1.Enabled & !label3.Text.Contains("PAUSE"))
-            {
-                player.Left = (ClientRectangle.Width - player.Width) / 2;
-            }
+        private void StartGame()
+        { 
+            timer1.Start();
+            label3.Text = "";
         }
 
-        private void RestartNextObstacle()
+        private void PauseControl()
         {
-            nextObstacle = r.Next(20, 50);
+            if (paused)
+            {
+                paused = false;
+                StartGame();
+            }
+            else
+            {
+                paused = true;
+                timer1.Stop();
+                label3.Text = "        PAUSED       \n\n(Space to Restart)";
+            }
         }
 
         private void RestartGame()
@@ -84,27 +90,47 @@ namespace Form1
             timer1.Stop();
             label1.Text = "Score: " + time;
             label2.Text = "High Score\n" + highScore;
-            label3.Text = "Press Enter to Start";
+            label3.Text = "Press Space to Start";
+        }
+
+        private void GameOver()
+        {
+            timer1.Stop();
+            this.gameOver = true;
+            label3.Text = "GAME OVER\nFINAL SCORE: " + time;
+            if (time > highScore)
+            {
+                highScore = Math.Round(time, 2);
+                label3.Text += "\nNEW HIGH SCORE!";
+            }
+
+            label3.Text += "\n\nPress Space to Restart";
+        }
+
+        private void AdjustLabels()
+        {
+            label2.Left = ClientRectangle.Right - label2.Width - 10;
+            TopBar.Width = ClientRectangle.Width;
+            label3.Left = (ClientRectangle.Width - label3.Width) / 2;
+            if (!timer1.Enabled & !label3.Text.Contains("PAUSE"))
+            {
+                player.Left = (ClientRectangle.Width - player.Width) / 2;
+            }
+        }
+
+        private void RestartNextObstacle()
+        {
+            nextObstacle = r.Next(20, 50);
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            // R restarts the game
-            if (e.KeyData == Keys.R) { RestartGame(); }
-
-            // Enter pauses/starts the game
-            if (e.KeyData == Keys.Enter & !gameOver)
+            if (e.KeyData == Keys.Space)
             {
-                if (timer1.Enabled)
-                {
-                    timer1.Stop();
-                    label3.Text = "        PAUSED       \n\n('R' to Restart)";
-                }
-                else
-                {
-                    timer1.Start();
-                    label3.Text = "";
-                }
+                if (gameOver) { RestartGame(); }
+                else if (!paused && !timer1.Enabled) { StartGame(); }
+                else { PauseControl(); }
+
             }
 
             // Allows one boost upwards in between wall/ground bounces
@@ -124,6 +150,7 @@ namespace Form1
             {
                 Physics.AccelApplied[0] = -5;
             }
+
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -131,17 +158,7 @@ namespace Form1
             // Checks to see if player is in contact with an obstacle
             if (Physics.inContact(player, ob, TopBar))
             {
-                timer1.Stop();
-                this.gameOver = true;
-                label3.Text = "GAME OVER\nFINAL SCORE: " + time;
-                if (time > highScore)
-                {
-                    highScore = Math.Round(time, 2);
-                    label3.Text += "\nNEW HIGH SCORE!";
-                }
-
-                label3.Text += "\n\nPress 'R' to Restart";
-
+                GameOver();
                 return;
             }
 
@@ -193,7 +210,7 @@ namespace Form1
             if (label3.Text == "")
             {
                 timer1.Stop();
-                label3.Text = "        PAUSED       \n\n('R' to Restart)";
+                label3.Text = "        PAUSED       \n\n(Space to Restart)";
             }
 
             // Readjust the labels
