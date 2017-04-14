@@ -38,7 +38,7 @@ namespace Form1
 
             HasBounced = false;
 
-            percentFromTop = 0.5;
+            percentFromTop = 0.33;
         }
 
         public void ChangeGameMode()
