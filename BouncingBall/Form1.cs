@@ -62,7 +62,7 @@ namespace Form1
 
         private void RestartNextObstacle()
         {
-            nextObstacle = r.Next(20, 60);
+            nextObstacle = r.Next(20, 50);
         }
 
         private void RestartGame()
@@ -73,7 +73,7 @@ namespace Form1
             this.RestartNextObstacle();
 
             player.Left = (ClientRectangle.Width - player.Width) / 2;
-            player.Top = 30;
+            player.Top = 40;
             foreach (var item in ob)
             {
                 this.Controls.Remove(item);
@@ -178,7 +178,7 @@ namespace Form1
                 }
                 else
                 {
-                    ob[i].Left -= (5 + ((int)time/4));
+                    ob[i].Left -= (5 + ((int)time/10));
                 }
             }
 

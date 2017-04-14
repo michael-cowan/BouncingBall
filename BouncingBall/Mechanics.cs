@@ -32,8 +32,8 @@ namespace Form1
             collisionEnergyLost = (BoostMode) ? 20 : 0;
 
             // Array[] { X, Y }
-            Velocity = new double[] { 0, -2 };
-            AccelApplied = new int[] { 0, 0 };
+            Velocity = new double[] { 0, 0 };
+            AccelApplied = new int[] { 0, -2 };
 
             HasBounced = false;
         }
@@ -120,7 +120,7 @@ namespace Form1
             p.Left = window.Right;
 
             // Determines whether obstacle appears on top or bottom of screen
-            if (r.NextDouble() < 0.5)
+            if (r.NextDouble() < 0.75)
             {
                 p.Top = window.Bottom - p.Height;
             }
