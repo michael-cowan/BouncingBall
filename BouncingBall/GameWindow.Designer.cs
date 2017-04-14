@@ -105,7 +105,7 @@
             // 
             this.OptionsLabel.AutoSize = true;
             this.OptionsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OptionsLabel.Location = new System.Drawing.Point(234, 452);
+            this.OptionsLabel.Location = new System.Drawing.Point(234, 445);
             this.OptionsLabel.Name = "OptionsLabel";
             this.OptionsLabel.Size = new System.Drawing.Size(178, 44);
             this.OptionsLabel.TabIndex = 5;
@@ -116,7 +116,7 @@
             // 
             this.JustBounceLabel.AutoSize = true;
             this.JustBounceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.JustBounceLabel.Location = new System.Drawing.Point(150, 500);
+            this.JustBounceLabel.Location = new System.Drawing.Point(175, 502);
             this.JustBounceLabel.Name = "JustBounceLabel";
             this.JustBounceLabel.Size = new System.Drawing.Size(104, 22);
             this.JustBounceLabel.TabIndex = 6;
@@ -127,7 +127,7 @@
             // 
             this.BounceNJumpLabel.AutoSize = true;
             this.BounceNJumpLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BounceNJumpLabel.Location = new System.Drawing.Point(472, 502);
+            this.BounceNJumpLabel.Location = new System.Drawing.Point(372, 502);
             this.BounceNJumpLabel.Name = "BounceNJumpLabel";
             this.BounceNJumpLabel.Size = new System.Drawing.Size(127, 22);
             this.BounceNJumpLabel.TabIndex = 7;
