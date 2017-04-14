@@ -10,31 +10,29 @@ using System.Windows.Forms;
 
 namespace Form1
 {
-    public partial class Form1 : Form
+    public partial class GameWindow : Form
     {
         private Mechanics Physics { get; set; }
         private Random r { get; set; }
         private List<PictureBox> ob { get; set; }
-        private double time { get; set; }
+        private int score { get; set; }
         private int obstacleCounter { get; set; }
         private int nextObstacle { get; set; }
         private bool gameOver { get; set; }
         private bool paused { get; set; }
-        private double highScore { get; set; }
-        private int multipleMoves { get; set; }
+        private int[] highScore { get; set; }
 
-        public Form1()
+        public GameWindow()
         {
             InitializeComponent();
             Physics = new Mechanics();
             r = new Random();
             ob = new List<PictureBox>();
-            time = 0;
+            score = 0;
             obstacleCounter = 0;
             RestartNextObstacle();
             gameOver = false;
-            highScore = 0;
-            multipleMoves = 0;
+            highScore = new int[] { 0, 0 };
             AdjustLabels();
 
             // Make the player a circle
@@ -44,16 +42,17 @@ namespace Form1
             var rg = new Region(gp);
             player.Region = rg;
 
-            TopBar.Width = ClientRectangle.Width;
-
             // Initializes start of game
             RestartGame();
         }
 
         private void StartGame()
         { 
-            timer1.Start();
-            label3.Text = "";
+            GameClock.Start();
+            MsgLabel.Text = "";
+            OptionsLabel.Text = "";
+            JustBounceLabel.Text = "";
+            BounceNJumpLabel.Text = "";
         }
 
         private void PauseControl()
@@ -66,8 +65,8 @@ namespace Form1
             else
             {
                 paused = true;
-                timer1.Stop();
-                label3.Text = "        PAUSED       \n\n(Space to Restart)";
+                GameClock.Stop();
+                MsgLabel.Text = "        PAUSED       \n\n(Space to Start)";
             }
         }
 
@@ -85,37 +84,76 @@ namespace Form1
                 this.Controls.Remove(item);
             }
             ob.Clear();
-            time = 0;
+            score = 0;
             gameOver = false;
-            timer1.Stop();
-            label1.Text = "Score: " + time;
-            label2.Text = "High Score\n" + highScore;
-            label3.Text = "Press Space to Start";
+            GameClock.Stop();
+            ScoreLabel.Text = "Score: " + score.ToString("D8");
+            SetHighScore();
+            MsgLabel.Text = "Press Space to Start";
+            OptionsLabel.Text = "Select Game Mode  \n('S' to switch)  ";
+            JustBounceLabel.Text = "JustBounce";
+            BounceNJumpLabel.Text = "BounceNJump";
+
+            BoldGameMode();
         }
 
         private void GameOver()
         {
-            timer1.Stop();
+            GameClock.Stop();
             this.gameOver = true;
-            label3.Text = "GAME OVER\nFINAL SCORE: " + time;
-            if (time > highScore)
+            int i = (Physics.BounceNJump) ? 1 : 0;
+            MsgLabel.Text = "GAME OVER\nFINAL SCORE: " + score.ToString("D");
+            if (score > highScore[i])
             {
-                highScore = Math.Round(time, 2);
-                label3.Text += "\nNEW HIGH SCORE!";
+                highScore[i] = score;
+                MsgLabel.Text += "\nNEW HIGH SCORE!";
             }
 
-            label3.Text += "\n\nPress Space to Restart";
+            MsgLabel.Text += "\n\nPress Space to Restart";
         }
 
         private void AdjustLabels()
         {
-            label2.Left = ClientRectangle.Right - label2.Width - 10;
+            HighScoreLabel.Left = ClientRectangle.Right - HighScoreLabel.Width - 10;
+
             TopBar.Width = ClientRectangle.Width;
-            label3.Left = (ClientRectangle.Width - label3.Width) / 2;
-            if (!timer1.Enabled & !label3.Text.Contains("PAUSE"))
+
+            MsgLabel.Left = (ClientRectangle.Width - MsgLabel.Width) / 2;
+            MsgLabel.Top = ClientRectangle.Top + 125;
+
+            OptionsLabel.Left = (ClientRectangle.Width - OptionsLabel.Width) / 2;
+            OptionsLabel.Top = ClientRectangle.Bottom - 100;
+
+            JustBounceLabel.Left = (ClientRectangle.Width - JustBounceLabel.Width) / 3;
+            JustBounceLabel.Top = ClientRectangle.Bottom - 50;
+
+            BounceNJumpLabel.Left = 2 * (ClientRectangle.Width - BounceNJumpLabel.Width) / 3;
+            BounceNJumpLabel.Top = ClientRectangle.Bottom - 50;
+
+            if (!GameClock.Enabled && !MsgLabel.Text.Contains("PAUSE"))
             {
                 player.Left = (ClientRectangle.Width - player.Width) / 2;
             }
+        }
+
+        private void BoldGameMode()
+        {
+            if (Physics.BounceNJump)
+            {
+                BounceNJumpLabel.Font = new Font(BounceNJumpLabel.Font, FontStyle.Bold);
+                JustBounceLabel.Font = new Font(JustBounceLabel.Font, FontStyle.Regular);
+            }
+            else
+            {
+                BounceNJumpLabel.Font = new Font(BounceNJumpLabel.Font, FontStyle.Regular);
+                JustBounceLabel.Font = new Font(BounceNJumpLabel.Font, FontStyle.Bold);
+            }
+        }
+
+        private void SetHighScore()
+        {
+            HighScoreLabel.Text = "High Score\n";
+            HighScoreLabel.Text += (Physics.BounceNJump) ? highScore[1] : highScore[0];
         }
 
         private void RestartNextObstacle()
@@ -123,24 +161,37 @@ namespace Form1
             nextObstacle = r.Next(20, 50);
         }
 
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        private void GameWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Space)
             {
                 if (gameOver) { RestartGame(); }
-                else if (!paused && !timer1.Enabled) { StartGame(); }
+                else if (!paused && !GameClock.Enabled) { StartGame(); }
                 else { PauseControl(); }
 
             }
 
+            if (e.KeyData == Keys.S && !string.IsNullOrEmpty(OptionsLabel.Text))
+            {
+                Physics.ChangeGameMode();
+                BoldGameMode();
+                SetHighScore();
+            }
+
+            // If not running, Esc closes the game //
+            if (e.KeyData == Keys.Escape && !GameClock.Enabled)
+            {
+                this.Close();
+            }
+
             // Allows one boost upwards in between wall/ground bounces
-            if (e.KeyData == Keys.Up & Physics.HasBounced & Physics.BoostMode)
+            if (e.KeyData == Keys.Up && Physics.HasBounced && Physics.BounceNJump)
             {
                 Physics.AccelApplied[1] = -10;
                 Physics.HasBounced = false;
             }
 
-            // Unlimited movements to the right & left
+            // Unlimited movements to the right && left
             if (e.KeyData == Keys.Right)
             {
                 Physics.AccelApplied[0] = 5;
@@ -153,7 +204,7 @@ namespace Form1
 
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void GameClock_Tick(object sender, EventArgs e)
         {
             // Checks to see if player is in contact with an obstacle
             if (Physics.inContact(player, ob, TopBar))
@@ -163,7 +214,7 @@ namespace Form1
             }
 
             // Calculates new time
-            time = Math.Round(time + (timer1.Interval / 1000.0), 2);
+            score += (int)Math.Round(GameClock.Interval / 10.0);
 
             // Adds a new obstacle if necessary
             if (obstacleCounter == nextObstacle)
@@ -183,7 +234,7 @@ namespace Form1
             Physics.AccelApplied[1] = 0;
 
             // Displays velocities and time
-            label1.Text = "Score: " + Math.Round(time, 1);
+            ScoreLabel.Text = string.Format("Score: {0}", score.ToString("D8"));
 
             // Moves the obstacles across bottom of screen
             for (int i = ob.Count - 1; i > -1; i--)
@@ -195,22 +246,22 @@ namespace Form1
                 }
                 else
                 {
-                    ob[i].Left -= (5 + ((int)time/10));
+                    ob[i].Left -= (5 + ((int)score/1000));
                 }
             }
 
             obstacleCounter++;
-            label1.SendToBack();
-            label2.SendToBack();
+            ScoreLabel.SendToBack();
+            HighScoreLabel.SendToBack();
         }
 
-        private void Form1_Resize(object sender, EventArgs e)
+        private void GameWindow_Resize(object sender, EventArgs e)
         {
             // If window is being resized, pause the game
-            if (label3.Text == "")
+            if (MsgLabel.Text == "")
             {
-                timer1.Stop();
-                label3.Text = "        PAUSED       \n\n(Space to Restart)";
+                GameClock.Stop();
+                MsgLabel.Text = "        PAUSED       \n\n(Space to Restart)";
             }
 
             // Readjust the labels

@@ -12,13 +12,14 @@ namespace Form1
 {
     class Mechanics
     {
-        private int g { get; set; }
         private double collisionEnergyLost { get; set; }
+        private int g { get; set; }
 
-        public double[] Velocity { get; set; }
         public int[] AccelApplied { get; set; }
+        public bool BounceNJump { get; set; }
         public bool HasBounced { get; set; }
-        public bool BoostMode { get; set; }
+        public double percentFromTop { get; set; }
+        public double[] Velocity { get; set; }
 
         public Mechanics()
         {
@@ -26,16 +27,24 @@ namespace Form1
             g = 2;
 
             // BoostMode means you can use a boost (up arrow)
-            BoostMode = false;
+            BounceNJump = false;
 
             // Energy lost in collision (%)
-            collisionEnergyLost = (BoostMode) ? 20 : 0;
+            collisionEnergyLost = 0;
 
             // Array[] { X, Y }
             Velocity = new double[] { 0, 0 };
             AccelApplied = new int[] { 0, -2 };
 
             HasBounced = false;
+
+            percentFromTop = 0.5;
+        }
+
+        public void ChangeGameMode()
+        {
+            BounceNJump = (BounceNJump) ? false : true;
+            collisionEnergyLost = (BounceNJump) ? 20 : 0;
         }
 
         public void NewGameSettings()
@@ -60,7 +69,7 @@ namespace Form1
 
         public int[] movePlayer(PictureBox player)
         {
-            Rectangle window = Form1.ActiveForm.ClientRectangle;
+            Rectangle window = GameWindow.ActiveForm.ClientRectangle;
             int[] ans = new int[] { player.Left, player.Top };
 
             //newVel = (a + g)dt + vel
@@ -81,7 +90,7 @@ namespace Form1
             if (!(player.Top == window.Top || player.Bottom == window.Bottom) || (Velocity[1] == 0))
             {
                 // Doesn't calculate new velocity if no force is applied and ball is on bottom of window
-                if (!(player.Bottom == window.Bottom & Velocity[1] == 0 & AccelApplied[1] >= 0))
+                if (!(player.Bottom == window.Bottom && Velocity[1] == 0 && AccelApplied[1] >= 0))
                 {
                     Velocity[1] = Math.Round(AccelApplied[1] + g + Velocity[1]);
                 }
@@ -120,7 +129,7 @@ namespace Form1
             p.Left = window.Right;
 
             // Determines whether obstacle appears on top or bottom of screen
-            if (r.NextDouble() < 0.75)
+            if (r.NextDouble() > percentFromTop)
             {
                 p.Top = window.Bottom - p.Height;
             }
@@ -128,7 +137,7 @@ namespace Form1
             {
                 p.Top = window.Top;
             }
-            Form1.ActiveForm.Controls.Add(p);
+            GameWindow.ActiveForm.Controls.Add(p);
             return p;
         }
 
