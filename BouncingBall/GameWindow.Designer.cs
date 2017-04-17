@@ -152,6 +152,7 @@
             this.Name = "GameWindow";
             this.Text = " ";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameWindow_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameWindow_KeyUp);
             this.Resize += new System.EventHandler(this.GameWindow_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.player)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TopBar)).EndInit();

@@ -23,22 +23,22 @@ namespace Form1
 
         public Mechanics()
         {
-            // Gravity acceleration: px / dt
+            // Gravity acceleration: px / dt //
             g = 2;
 
-            // BoostMode means you can use a boost (up arrow)
+            // BoostMode means you can use a boost (up arrow) //
             BounceNJump = false;
 
-            // Energy lost in collision (%)
+            // Energy lost in collision (%) //
             collisionEnergyLost = 0;
 
-            // Array[] { X, Y }
+            // Array[] { X, Y } //
             Velocity = new double[] { 0, 0 };
             AccelApplied = new int[] { 0, -2 };
 
             HasBounced = false;
 
-            percentFromTop = 0.5;
+            percentFromTop = 0.1;
         }
 
         public void ChangeGameMode()
@@ -59,10 +59,10 @@ namespace Form1
         {
             HasBounced = true;
 
-            // Calculate new velocity from collision
+            // Calculate new velocity from collision //
             double newVel = -(Velocity[i] * ((100 - collisionEnergyLost) / 100));
 
-            // If velocity is less than 3 px / dt, round down to 0
+            // If velocity is less than 3 px / dt, round down to 0 //
             if (Math.Abs(newVel) < 5) { newVel = 0; }
             Velocity[i] = newVel;
         }
@@ -72,24 +72,24 @@ namespace Form1
             Rectangle window = GameWindow.ActiveForm.ClientRectangle;
             int[] ans = new int[] { player.Left, player.Top };
 
-            //newVel = (a + g)dt + vel
-            //   dt ~= 1
-            // Account for acceleration or collision if at wall
+            //newVel = (a + g)dt + vel //
+            //   dt ~= 1    //
+            // Account for acceleration or collision if at wall //
 
             // X axis
             if (!(player.Right == window.Right || player.Left == window.Left) || (Velocity[0] == 0))
             {
                 Velocity[0] = Math.Round(Velocity[0] + AccelApplied[0]);
                 
-                // Rounds X axis velocity to 0 if it is under 3 px / dt
-                if (Math.Abs(Velocity[0]) < 3) { Velocity[0] = 0; }
+                // Rounds X axis velocity to 0 if it is under 3 px / dt //
+                //if (Math.Abs(Velocity[0]) < 3) { Velocity[0] = 0; }
             }
             else { ElasticCollision(0); }
 
             // Y axis
             if (!(player.Top == window.Top || player.Bottom == window.Bottom) || (Velocity[1] == 0))
             {
-                // Doesn't calculate new velocity if no force is applied and ball is on bottom of window
+                // Doesn't calculate new velocity if no force is applied and ball is on bottom of window //
                 if (!(player.Bottom == window.Bottom && Velocity[1] == 0 && AccelApplied[1] >= 0))
                 {
                     Velocity[1] = Math.Round(AccelApplied[1] + g + Velocity[1]);
@@ -99,11 +99,11 @@ namespace Form1
 
             
 
-            // Find the new position of the player
+            // Find the new position of the player //
             int[,] minMax = new int[,] { { window.Left, window.Right - player.Width }, { window.Top, window.Bottom - player.Height } };
             for (int i = 0; i < 2; i++)
             {
-                // Makes sure player stays within window
+                // Makes sure player stays within window //
                 if (Velocity[i] < 0)
                 {
                     ans[i] = (int)Math.Round(Math.Max(minMax[i, 0], ans[i] + Velocity[i]));
@@ -128,7 +128,7 @@ namespace Form1
             p.Size = new Size(r.Next(10, (int)window.Width/8), r.Next(30, (int)window.Height/3));
             p.Left = window.Right;
 
-            // Determines whether obstacle appears on top or bottom of screen
+            // Determines whether obstacle appears on top or bottom of screen //
             if (r.NextDouble() > percentFromTop)
             {
                 p.Top = window.Bottom - p.Height;

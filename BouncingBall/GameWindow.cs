@@ -47,7 +47,7 @@ namespace Form1
         }
 
         private void StartGame()
-        { 
+        {
             GameClock.Start();
             MsgLabel.Text = "";
             OptionsLabel.Text = "";
@@ -163,45 +163,70 @@ namespace Form1
 
         private void GameWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.Space)
+            switch (e.KeyData)
             {
-                if (gameOver) { RestartGame(); }
-                else if (!paused && !GameClock.Enabled) { StartGame(); }
-                else { PauseControl(); }
+                case Keys.Space:
+                    {
+                        if (gameOver) { RestartGame(); }
+                        else if (!paused && !GameClock.Enabled) { StartGame(); }
+                        else { PauseControl(); }
+                    } break;
 
+                case Keys.S:
+                    {
+                        if (!string.IsNullOrEmpty(MsgLabel.Text))
+                        {
+                            Physics.ChangeGameMode();
+                            BoldGameMode();
+                            SetHighScore();
+                        }
+                    } break;
+
+                // If not running, Esc closes the game //
+                case Keys.Escape:
+                    {
+                        if (!GameClock.Enabled) { this.Close(); }
+                    } break;
+
+                // Allows one boost upwards in between wall/ground bounces //
+                case Keys.Up:
+                    {
+                        if (Physics.BounceNJump && Physics.HasBounced)
+                        {
+                            Physics.AccelApplied[1] = -10;
+                            Physics.HasBounced = false;
+                        }
+                    } break;
+
+                // Unlimited movements to the right & left //
+                case Keys.Right:
+                    {
+                        Physics.AccelApplied[0] = 2;
+                    } break;
+
+                case Keys.Left:
+                    {
+                        Physics.AccelApplied[0] = -2;
+                    } break;
             }
+        }
 
-            if (e.KeyData == Keys.S && !string.IsNullOrEmpty(OptionsLabel.Text))
+        private void GameWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyData)
             {
-                Physics.ChangeGameMode();
-                BoldGameMode();
-                SetHighScore();
-            }
+                case Keys.Right:
+                    {
+                        Physics.AccelApplied[0] = 0;
+                    }
+                    break;
 
-            // If not running, Esc closes the game //
-            if (e.KeyData == Keys.Escape && !GameClock.Enabled)
-            {
-                this.Close();
+                case Keys.Left:
+                    {
+                        Physics.AccelApplied[0] = 0;
+                    }
+                    break;
             }
-
-            // Allows one boost upwards in between wall/ground bounces
-            if (e.KeyData == Keys.Up && Physics.HasBounced && Physics.BounceNJump)
-            {
-                Physics.AccelApplied[1] = -10;
-                Physics.HasBounced = false;
-            }
-
-            // Unlimited movements to the right && left
-            if (e.KeyData == Keys.Right)
-            {
-                Physics.AccelApplied[0] = 5;
-            }
-
-            else if (e.KeyData == Keys.Left)
-            {
-                Physics.AccelApplied[0] = -5;
-            }
-
         }
 
         private void GameClock_Tick(object sender, EventArgs e)
@@ -229,8 +254,7 @@ namespace Form1
             player.Left = newPositions[0];
             player.Top = newPositions[1];
 
-            // Clear accelerations applied
-            Physics.AccelApplied[0] = 0;
+            // Clear vertical acceleration applied
             Physics.AccelApplied[1] = 0;
 
             // Displays velocities and time
@@ -246,7 +270,7 @@ namespace Form1
                 }
                 else
                 {
-                    ob[i].Left -= (5 + ((int)score/1000));
+                    ob[i].Left -= (5 + ((int)score / 1000));
                 }
             }
 
