@@ -270,7 +270,7 @@ namespace Form1
                 }
                 else
                 {
-                    ob[i].Left -= (5 + ((int)score / 1000));
+                    ob[i].Left -= 5;// (5 + ((int)score / 1000));
                 }
             }
 
