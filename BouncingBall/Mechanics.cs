@@ -13,7 +13,7 @@ namespace Form1
     class Mechanics
     {
         private double collisionEnergyLost { get; set; }
-        private int g { get; set; }
+        private int[] g { get; set; }
 
         public int[] AccelApplied { get; set; }
         public bool BounceNJump { get; set; }
@@ -24,7 +24,7 @@ namespace Form1
         public Mechanics()
         {
             // Gravity acceleration: px / dt //
-            g = 2;
+            g = new int[] { 0, 2};
 
             // BoostMode means you can use a boost (up arrow) //
             BounceNJump = false;
@@ -34,7 +34,7 @@ namespace Form1
 
             // Array[] { X, Y } //
             Velocity = new double[] { 0, 0 };
-            AccelApplied = new int[] { 0, -2 };
+            AccelApplied = new int[] { 0, 0 };
 
             HasBounced = false;
 
@@ -50,19 +50,19 @@ namespace Form1
         public void NewGameSettings()
         {
             Velocity[0] = 0;
-            Velocity[1] = -2;
+            Velocity[1] = 0;
             AccelApplied[0] = 0;
             AccelApplied[1] = 0;
         }
 
-        public void ElasticCollision(int i)
+        private void ElasticCollision(int i)
         {
             HasBounced = true;
 
             // Calculate new velocity from collision //
-            double newVel = -(Velocity[i] * ((100 - collisionEnergyLost) / 100));
+            double newVel = -(Velocity[i] * ((100 - collisionEnergyLost) / 100.0));
 
-            // If velocity is less than 3 px / dt, round down to 0 //
+            // If velocity is less than 5 px / dt, round down to 0 //
             if (Math.Abs(newVel) < 5) { newVel = 0; }
             Velocity[i] = newVel;
         }
@@ -92,11 +92,19 @@ namespace Form1
                 // Doesn't calculate new velocity if no force is applied and ball is on bottom of window //
                 if (!(player.Bottom == window.Bottom && Velocity[1] == 0 && AccelApplied[1] >= 0))
                 {
-                    Velocity[1] = Math.Round(AccelApplied[1] + g + Velocity[1]);
+                    double total = ans[1] + AccelApplied[1] + g[1] + Velocity[1];
+                    int lowest = window.Bottom - player.Height;
+                    if (total > lowest)
+                    {
+                        Velocity[1] += Math.Ceiling((AccelApplied[1] + g[1]) * ((lowest - ans[1]) / (total - ans[1])));
+                    }
+                    else
+                    { 
+                        Velocity[1] = Math.Round(AccelApplied[1] + g[1] + Velocity[1]);
+                    }
                 }
             }
             else { ElasticCollision(1); }
-
             
 
             // Find the new position of the player //

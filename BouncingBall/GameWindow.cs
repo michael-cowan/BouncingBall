@@ -21,6 +21,7 @@ namespace Form1
         private bool gameOver { get; set; }
         private bool paused { get; set; }
         private int[] highScore { get; set; }
+        private int MaxHeight { get; set; }
 
         public GameWindow()
         {
@@ -78,7 +79,8 @@ namespace Form1
             this.RestartNextObstacle();
 
             player.Left = (ClientRectangle.Width - player.Width) / 2;
-            player.Top = 40;
+            player.Top = 25;
+            MaxHeight = player.Top;
             foreach (var item in ob)
             {
                 this.Controls.Remove(item);
@@ -251,6 +253,7 @@ namespace Form1
 
             // Moves the player
             int[] newPositions = Physics.movePlayer(player);
+            //int[] newPositions = Physics.move(player);
             player.Left = newPositions[0];
             player.Top = newPositions[1];
 
