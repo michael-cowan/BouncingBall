@@ -79,7 +79,7 @@ namespace Form1
             // X axis
             if (!(player.Right == window.Right || player.Left == window.Left) || (Velocity[0] == 0))
             {
-                Velocity[0] = Math.Round(Velocity[0] + AccelApplied[0]);
+                Velocity[0] = Math.Round(Velocity[0] + AccelApplied[0] + g[0]);
                 
                 // Rounds X axis velocity to 0 if it is under 3 px / dt //
                 //if (Math.Abs(Velocity[0]) < 3) { Velocity[0] = 0; }
@@ -100,7 +100,7 @@ namespace Form1
                     }
                     else
                     { 
-                        Velocity[1] = Math.Round(AccelApplied[1] + g[1] + Velocity[1]);
+                        Velocity[1] = Math.Round(Velocity[1] + AccelApplied[1] + g[1]);
                     }
                 }
             }
