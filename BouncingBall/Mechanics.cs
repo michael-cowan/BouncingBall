@@ -12,6 +12,7 @@ namespace Form1
 {
     class Mechanics
     {
+        // PROPERTIES //
         private double collisionEnergyLost { get; set; }
         private int[] g { get; set; }
 
@@ -21,6 +22,8 @@ namespace Form1
         public double percentFromTop { get; set; }
         public double[] Velocity { get; set; }
 
+
+        // CONSTRUCTOR //
         public Mechanics()
         {
             // Gravity acceleration: px / dt //
@@ -41,20 +44,36 @@ namespace Form1
             percentFromTop = 0.4;
         }
 
+
+        // METHODS //
+        public PictureBox addObstacle()
+        {
+            Rectangle window = Form.ActiveForm.ClientRectangle;
+            Random r = new Random();
+
+            PictureBox p = new PictureBox();
+            p.Name = "Obstacle";
+            p.BackColor = Color.Blue;
+            p.Size = new Size(r.Next(10, (int)window.Width / 8), r.Next(30, (int)window.Height / 3));
+            p.Left = window.Right;
+
+            // Determines whether obstacle appears on top or bottom of screen //
+            if (r.NextDouble() > percentFromTop)
+            {
+                p.Top = window.Bottom - p.Height;
+            }
+            else
+            {
+                p.Top = window.Top;
+            }
+            GameWindow.ActiveForm.Controls.Add(p);
+            return p;
+        }
         public void ChangeGameMode()
         {
             BounceNJump = (BounceNJump) ? false : true;
             collisionEnergyLost = (BounceNJump) ? 20 : 0;
         }
-
-        public void NewGameSettings()
-        {
-            Velocity[0] = 0;
-            Velocity[1] = 0;
-            AccelApplied[0] = 0;
-            AccelApplied[1] = 0;
-        }
-
         private void ElasticCollision(int i)
         {
             HasBounced = true;
@@ -66,7 +85,18 @@ namespace Form1
             if (Math.Abs(newVel) < 5) { newVel = 0; }
             Velocity[i] = newVel;
         }
-
+        public bool inContact(PictureBox player, List<PictureBox> ob, PictureBox TopBar)
+        {
+            if (player.Bounds.IntersectsWith(TopBar.Bounds)) { return true; }
+            foreach (var item in ob)
+            {
+                if (player.Bounds.IntersectsWith(item.Bounds))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public int[] movePlayer(PictureBox player)
         {
             Rectangle window = GameWindow.ActiveForm.ClientRectangle;
@@ -80,7 +110,7 @@ namespace Form1
             if (!(player.Right == window.Right || player.Left == window.Left) || (Velocity[0] == 0))
             {
                 Velocity[0] = Math.Round(Velocity[0] + AccelApplied[0] + g[0]);
-                
+
                 // Rounds X axis velocity to 0 if it is under 3 px / dt //
                 //if (Math.Abs(Velocity[0]) < 3) { Velocity[0] = 0; }
             }
@@ -99,13 +129,13 @@ namespace Form1
                         Velocity[1] += Math.Ceiling((AccelApplied[1] + g[1]) * ((lowest - ans[1]) / (total - ans[1])));
                     }
                     else
-                    { 
+                    {
                         Velocity[1] = Math.Round(Velocity[1] + AccelApplied[1] + g[1]);
                     }
                 }
             }
             else { ElasticCollision(1); }
-            
+
 
             // Find the new position of the player //
             int[,] minMax = new int[,] { { window.Left, window.Right - player.Width }, { window.Top, window.Bottom - player.Height } };
@@ -124,42 +154,12 @@ namespace Form1
 
             return ans;
         }
-
-        public PictureBox addObstacle()
+        public void NewGameSettings()
         {
-            Rectangle window = Form.ActiveForm.ClientRectangle;
-            Random r = new Random();
-
-            PictureBox p = new PictureBox();
-            p.Name = "Obstacle";
-            p.BackColor = Color.Blue;
-            p.Size = new Size(r.Next(10, (int)window.Width/8), r.Next(30, (int)window.Height/3));
-            p.Left = window.Right;
-
-            // Determines whether obstacle appears on top or bottom of screen //
-            if (r.NextDouble() > percentFromTop)
-            {
-                p.Top = window.Bottom - p.Height;
-            }
-            else
-            {
-                p.Top = window.Top;
-            }
-            GameWindow.ActiveForm.Controls.Add(p);
-            return p;
-        }
-
-        public bool inContact(PictureBox player, List<PictureBox> ob, PictureBox TopBar)
-        {
-            if (player.Bounds.IntersectsWith(TopBar.Bounds)) { return true; }
-            foreach (var item in ob)
-            {
-                if (player.Bounds.IntersectsWith(item.Bounds))
-                {
-                    return true;
-                }
-            }
-            return false;
+            Velocity[0] = 0;
+            Velocity[1] = 0;
+            AccelApplied[0] = 0;
+            AccelApplied[1] = 0;
         }
     }
 }

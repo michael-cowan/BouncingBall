@@ -24,6 +24,7 @@ namespace Form1
         private Random r { get; set; }
         private int score { get; set; }
 
+
         // CONSTRUCTOR //
         public GameWindow()
         {
