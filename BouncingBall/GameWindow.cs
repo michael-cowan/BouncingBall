@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BouncingBall;
 
 namespace Form1
 {
@@ -116,6 +117,7 @@ namespace Form1
                 MsgLabel.Text = "        PAUSED       \n\n(Space to Start)";
             }
         }
+        private int PixPerSecond(double seconds) => (int)((seconds * 1000)/ GameClock.Interval);
         private void RestartGame()
         {
             physics.NewGameSettings();
@@ -145,7 +147,7 @@ namespace Form1
         }
         private void RestartNextObstacle()
         {
-            nextObstacle = r.Next(20, 50);
+            nextObstacle = r.Next(this.PixPerSecond(1.0), this.PixPerSecond(1.25));
         }
         private void SetHighScore()
         {
@@ -160,7 +162,6 @@ namespace Form1
             JustBounceLabel.Text = "";
             BounceNJumpLabel.Text = "";
         }
-
 
         // ACTIONS //
         private void GameClock_Tick(object sender, EventArgs e)
@@ -178,11 +179,12 @@ namespace Form1
             // Adds a new obstacle if necessary
             if (obstacleCounter == nextObstacle)
             {
-                ob.Add(physics.addObstacle());
+                //ob.Add(physics.addObstacle());
+                ob.Add(new Obstacle(physics.percentFromTop));
                 obstacleCounter = 0;
                 RestartNextObstacle();
             }
-
+            
             // Moves the player
             int[] newPositions = physics.movePlayer(player);
             //int[] newPositions = Physics.move(player);

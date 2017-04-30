@@ -14,9 +14,9 @@ namespace Form1
     {
         // PROPERTIES //
         private double collisionEnergyLost { get; set; }
-        private int[] g { get; set; }
+        private double[] g { get; set; }
 
-        public int[] AccelApplied { get; set; }
+        public double[] AccelApplied { get; set; }
         public bool BounceNJump { get; set; }
         public bool HasBounced { get; set; }
         public double percentFromTop { get; set; }
@@ -27,7 +27,7 @@ namespace Form1
         public Mechanics()
         {
             // Gravity acceleration: px / dt //
-            g = new int[] { 0, 2};
+            g = new double[] { 0, 2.0};
 
             // BoostMode means you can use a boost (up arrow) //
             BounceNJump = false;
@@ -37,7 +37,7 @@ namespace Form1
 
             // Array[] { X, Y } //
             Velocity = new double[] { 0, 0 };
-            AccelApplied = new int[] { 0, 0 };
+            AccelApplied = new double[] { 0, 0 };
 
             HasBounced = false;
 
