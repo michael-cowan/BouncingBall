@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using BouncingBall;
 
-namespace Form1
+namespace BouncingBall
 {
     public partial class GameWindow : Form
     {
@@ -179,15 +173,13 @@ namespace Form1
             // Adds a new obstacle if necessary
             if (obstacleCounter == nextObstacle)
             {
-                //ob.Add(physics.addObstacle());
-                ob.Add(new Obstacle(physics.percentFromTop));
+                ob.Add(new Obstacle());
                 obstacleCounter = 0;
                 RestartNextObstacle();
             }
             
             // Moves the player
             int[] newPositions = physics.movePlayer(player);
-            //int[] newPositions = Physics.move(player);
             player.Left = newPositions[0];
             player.Top = newPositions[1];
 

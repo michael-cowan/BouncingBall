@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using System.Windows.Forms;
 using System.Drawing;
-using Form1;
 
-namespace Form1
+namespace BouncingBall
 {
     class Mechanics
     {
@@ -19,7 +14,6 @@ namespace Form1
         public double[] AccelApplied { get; set; }
         public bool BounceNJump { get; set; }
         public bool HasBounced { get; set; }
-        public double percentFromTop { get; set; }
         public double[] Velocity { get; set; }
 
 
@@ -36,39 +30,14 @@ namespace Form1
             collisionEnergyLost = 0;
 
             // Array[] { X, Y } //
-            Velocity = new double[] { 0, 0 };
             AccelApplied = new double[] { 0, 0 };
+            Velocity = new double[] { 0, 0 };
 
             HasBounced = false;
-
-            percentFromTop = 0.4;
         }
 
 
         // METHODS //
-        public PictureBox addObstacle()
-        {
-            Rectangle window = Form.ActiveForm.ClientRectangle;
-            Random r = new Random();
-
-            PictureBox p = new PictureBox();
-            p.Name = "Obstacle";
-            p.BackColor = Color.Blue;
-            p.Size = new Size(r.Next(10, (int)window.Width / 8), r.Next(30, (int)window.Height / 3));
-            p.Left = window.Right;
-
-            // Determines whether obstacle appears on top or bottom of screen //
-            if (r.NextDouble() > percentFromTop)
-            {
-                p.Top = window.Bottom - p.Height;
-            }
-            else
-            {
-                p.Top = window.Top;
-            }
-            GameWindow.ActiveForm.Controls.Add(p);
-            return p;
-        }
         public void ChangeGameMode()
         {
             BounceNJump = (BounceNJump) ? false : true;
@@ -100,7 +69,7 @@ namespace Form1
         public int[] movePlayer(PictureBox player)
         {
             Rectangle window = GameWindow.ActiveForm.ClientRectangle;
-            int[] ans = new int[] { player.Left, player.Top };
+            int[] position = new int[] { player.Left, player.Top };
 
             //newVel = (a + g)dt + vel //
             //   dt ~= 1    //
@@ -110,49 +79,47 @@ namespace Form1
             if (!(player.Right == window.Right || player.Left == window.Left) || (Velocity[0] == 0))
             {
                 Velocity[0] = Math.Round(Velocity[0] + AccelApplied[0] + g[0]);
-
-                // Rounds X axis velocity to 0 if it is under 3 px / dt //
-                //if (Math.Abs(Velocity[0]) < 3) { Velocity[0] = 0; }
             }
             else { ElasticCollision(0); }
 
             // Y axis
-            if (!(player.Top == window.Top || player.Bottom == window.Bottom) || (Velocity[1] == 0))
+            if ((player.Bottom != window.Bottom && player.Top != window.Top) || (Velocity[1] == 0))
             {
-                // Doesn't calculate new velocity if no force is applied and ball is on bottom of window //
-                if (!(player.Bottom == window.Bottom && Velocity[1] == 0 && AccelApplied[1] >= 0))
+                double total = position[1] + AccelApplied[1] + g[1] + Velocity[1];
+                int lowest = window.Bottom - player.Height;
+                if (total > lowest)
                 {
-                    double total = ans[1] + AccelApplied[1] + g[1] + Velocity[1];
-                    int lowest = window.Bottom - player.Height;
-                    if (total > lowest)
-                    {
-                        Velocity[1] += Math.Ceiling((AccelApplied[1] + g[1]) * ((lowest - ans[1]) / (total - ans[1])));
-                    }
-                    else
-                    {
-                        Velocity[1] = Math.Round(Velocity[1] + AccelApplied[1] + g[1]);
-                    }
+                    Velocity[1] += Math.Ceiling((AccelApplied[1] + g[1]) * ((lowest - position[1]) / (total - position[1])));
+                }
+                else
+                {
+                    Velocity[1] = Math.Round(Velocity[1] + AccelApplied[1] + g[1]);
                 }
             }
             else { ElasticCollision(1); }
 
 
             // Find the new position of the player //
-            int[,] minMax = new int[,] { { window.Left, window.Right - player.Width }, { window.Top, window.Bottom - player.Height } };
+            int[,] minMax = new int[,]
+            { 
+                { window.Left, window.Right - player.Width },
+                { window.Top, window.Bottom - player.Height }
+            };
+
             for (int i = 0; i < 2; i++)
             {
                 // Makes sure player stays within window //
                 if (Velocity[i] < 0)
                 {
-                    ans[i] = (int)Math.Round(Math.Max(minMax[i, 0], ans[i] + Velocity[i]));
+                    position[i] = (int)Math.Round(Math.Max(minMax[i, 0], position[i] + Velocity[i]));
                 }
                 else
                 {
-                    ans[i] = (int)Math.Round(Math.Min(minMax[i, 1], ans[i] + Velocity[i]));
+                    position[i] = (int)Math.Round(Math.Min(minMax[i, 1], position[i] + Velocity[i]));
                 }
             }
 
-            return ans;
+            return position;
         }
         public void NewGameSettings()
         {
